@@ -1,15 +1,15 @@
 #[cfg(test)]
 mod tests {
-    use derive_masked::DebugMasked;
+    use derive_masked::{DebugMasked, DisplayMasked};
 
-    #[derive(DebugMasked, PartialEq, Eq, Clone)]
+    #[derive(DebugMasked, DisplayMasked, PartialEq, Eq, Clone)]
     struct User {
         name: String,
         #[masked]
         password: String,
     }
 
-    #[derive(DebugMasked)]
+    #[derive(DebugMasked, DisplayMasked)]
     struct ComplexStruct {
         title: String,
         #[masked]
@@ -18,9 +18,9 @@ mod tests {
         expired_api_keys: Vec<String>,
         #[masked]
         port: u16,
-        public_users: Vec<User>,
+        public_user: User,
         #[masked]
-        private_users: Vec<User>,
+        masked_user: User,
     }
 
     #[test]
@@ -62,29 +62,29 @@ mod tests {
 
     #[test]
     fn test_debug_masked_complex_struct() {
-        let public_users = vec![User {
-            name: "user one".to_string(),
-            password: "password one".to_string(),
-        }];
+        let public_user = User {
+            name: "public user".to_string(),
+            password: "password public user".to_string(),
+        };
 
-        let private_users = vec![User {
-            name: "user two".to_string(),
-            password: "password two".to_string(),
-        }];
+        let masked_user = User {
+            name: "masked user".to_string(),
+            password: "password masked user".to_string(),
+        };
 
         let complex = ComplexStruct {
             title: "my complex struct".to_string(),
             api_key: "12345".to_string(),
             expired_api_keys: vec!["key-1".to_string(), "key-2".to_string()],
             port: 22,
-            public_users: public_users.clone(),
-            private_users: private_users.clone(),
+            public_user: public_user.clone(),
+            masked_user: masked_user.clone(),
         };
 
         // The struct must be printed using the non-pretty debug formatter.
         assert_eq!(
             format!("{:?}", complex),
-            r#"ComplexStruct { title: "my complex struct", api_key: *****, expired_api_keys: *****, port: *****, public_users: [User { name: "user one", password: ***** }], private_users: ***** }"#
+            r#"ComplexStruct { title: "my complex struct", api_key: *****, expired_api_keys: *****, port: *****, public_user: User { name: "public user", password: ***** }, masked_user: ***** }"#
         );
 
         // The underlying fields in the structs are intact.
@@ -94,33 +94,33 @@ mod tests {
             vec!["key-1".to_string(), "key-2".to_string()]
         );
         assert_eq!(complex.port, 22);
-        assert_eq!(complex.public_users, public_users);
-        assert_eq!(complex.private_users, private_users);
+        assert_eq!(complex.public_user, public_user);
+        assert_eq!(complex.masked_user, masked_user);
     }
 
     #[test]
     fn test_debug_masked_complex_struct_pretty_formatter() {
-        let public_users = vec![User {
-            name: "user one".to_string(),
-            password: "password one".to_string(),
-        }];
+        let public_user = User {
+            name: "public user".to_string(),
+            password: "password public user".to_string(),
+        };
 
-        let private_users = vec![User {
-            name: "user two".to_string(),
-            password: "password two".to_string(),
-        }];
+        let masked_user = User {
+            name: "masked user".to_string(),
+            password: "password masked user".to_string(),
+        };
 
         let complex = ComplexStruct {
             title: "my complex struct".to_string(),
             api_key: "12345".to_string(),
             expired_api_keys: vec!["key-1".to_string(), "key-2".to_string()],
             port: 22,
-            public_users: public_users.clone(),
-            private_users: private_users.clone(),
+            public_user: public_user.clone(),
+            masked_user: masked_user.clone(),
         };
 
         // The struct must be printed using the pretty debug formatter.
-        // TODO: The 'public_users' field is not being printed using the pretty formatter.
+        // TODO: The 'public_users' field is not being printed using the pretty formatter, but but with the normal formatter (still masked, so it's not a security risk).
         assert_eq!(
             format!("{:#?}", complex),
             r#"ComplexStruct {
@@ -128,8 +128,8 @@ mod tests {
     api_key: *****,
     expired_api_keys: *****,
     port: *****,
-    public_users: [User { name: "user one", password: ***** }],
-    private_users: *****
+    public_user: User { name: "public user", password: ***** },
+    masked_user: *****
 }"#
         );
 
@@ -140,7 +140,7 @@ mod tests {
             vec!["key-1".to_string(), "key-2".to_string()]
         );
         assert_eq!(complex.port, 22);
-        assert_eq!(complex.public_users, public_users);
-        assert_eq!(complex.private_users, private_users);
+        assert_eq!(complex.public_user, public_user);
+        assert_eq!(complex.masked_user, masked_user);
     }
 }
