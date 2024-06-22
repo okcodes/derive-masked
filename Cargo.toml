@@ -34,6 +34,7 @@ keywords = [
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/okcodes/derive-masked"
 homepage = "https://github.com/okcodes/derive-masked"
+rust-version = "1.56"
 
 [dependencies]
 quote = "1.0.36"
