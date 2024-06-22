@@ -6,6 +6,16 @@ edition = "2021"
 categories = ["development-tools::procedural-macro-helpers", "value-formatting"]
 description = "Adds #[derive(x)] macros for implementing the Debug and Display traits masking out sensitive fields"
 documentation = "https://docs.rs/derive-masked"
+include = [
+    "/benches/**",
+    "/Cargo.toml",
+    "/LICENSE-APACHE",
+    "/LICENSE-MIT",
+    "/README.md",
+    "/src/**",
+    "/examples/**",
+    "/tests/**",
+]
 keywords = [
     "macros",
     "proc-macros",
