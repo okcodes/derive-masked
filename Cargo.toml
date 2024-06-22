@@ -18,18 +18,10 @@ include = [
 ]
 keywords = [
     "macros",
-    "proc-macros",
     "derive",
-    "Display",
-    "Debug",
-    "mask",
     "password",
     "redact",
     "sensitive",
-    "privacy",
-    "security",
-    "formatting",
-    "masking",
 ]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/okcodes/derive-masked"
