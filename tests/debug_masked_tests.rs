@@ -24,16 +24,22 @@ mod tests {
     }
 
     #[test]
-    fn test_debug_masked() {
+    fn test_masked() {
         let user = User {
             name: "John Doe".to_string(),
             password: "secret".to_string(),
         };
 
-        // The struct must be printed using the non-pretty debug formatter.
+        // The struct must be printed using the non-pretty "debug" formatter.
         assert_eq!(
             format!("{:?}", user),
             r#"User { name: "John Doe", password: ***** }"#
+        );
+
+        // The struct must be printed using the non-pretty "display" formatter.
+        assert_eq!(
+            format!("{:}", user),
+            r#"User { name: John Doe, password: ***** }"#
         );
 
         // The underlying fields in the structs are intact.
@@ -41,17 +47,26 @@ mod tests {
     }
 
     #[test]
-    fn test_debug_masked_pretty_formatter() {
+    fn test_masked_pretty() {
         let user = User {
             name: "John Doe".to_string(),
             password: "secret".to_string(),
         };
 
-        // The struct must be printed using the pretty debug formatter.
+        // The struct must be printed using the pretty "debug" formatter.
         assert_eq!(
             format!("{:#?}", user),
             r#"User {
     name: "John Doe",
+    password: *****
+}"#
+        );
+
+        // The struct must be printed using the pretty "display" formatter.
+        assert_eq!(
+            format!("{:#}", user),
+            r#"User {
+    name: John Doe,
     password: *****
 }"#
         );
@@ -61,7 +76,7 @@ mod tests {
     }
 
     #[test]
-    fn test_debug_masked_complex_struct() {
+    fn test_masked_complex() {
         let public_user = User {
             name: "public user".to_string(),
             password: "password public user".to_string(),
@@ -81,10 +96,16 @@ mod tests {
             masked_user: masked_user.clone(),
         };
 
-        // The struct must be printed using the non-pretty debug formatter.
+        // The struct must be printed using the non-pretty "debug" formatter.
         assert_eq!(
             format!("{:?}", complex),
             r#"ComplexStruct { title: "my complex struct", api_key: *****, expired_api_keys: *****, port: *****, public_user: User { name: "public user", password: ***** }, masked_user: ***** }"#
+        );
+
+        // The struct must be printed using the non-pretty "display" formatter.
+        assert_eq!(
+            format!("{:}", complex),
+            r#"ComplexStruct { title: my complex struct, api_key: *****, expired_api_keys: *****, port: *****, public_user: User { name: public user, password: ***** }, masked_user: ***** }"#
         );
 
         // The underlying fields in the structs are intact.
@@ -99,7 +120,7 @@ mod tests {
     }
 
     #[test]
-    fn test_debug_masked_complex_struct_pretty_formatter() {
+    fn test_debug_masked_complex_pretty() {
         let public_user = User {
             name: "public user".to_string(),
             password: "password public user".to_string(),
@@ -119,7 +140,7 @@ mod tests {
             masked_user: masked_user.clone(),
         };
 
-        // The struct must be printed using the pretty debug formatter.
+        // The struct must be printed using the pretty "debug" formatter.
         // TODO: The 'public_users' field is not being printed using the pretty formatter, but but with the normal formatter (still masked, so it's not a security risk).
         assert_eq!(
             format!("{:#?}", complex),
@@ -129,6 +150,19 @@ mod tests {
     expired_api_keys: *****,
     port: *****,
     public_user: User { name: "public user", password: ***** },
+    masked_user: *****
+}"#
+        );
+
+        // The struct must be printed using the pretty "display" formatter.
+        assert_eq!(
+            format!("{:#}", complex),
+            r#"ComplexStruct {
+    title: my complex struct,
+    api_key: *****,
+    expired_api_keys: *****,
+    port: *****,
+    public_user: User { name: public user, password: ***** },
     masked_user: *****
 }"#
         );
