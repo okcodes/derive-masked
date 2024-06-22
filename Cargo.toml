@@ -1,6 +1,6 @@
 [package]
 name = "derive-masked"
-version = "0.0.0-alpha.0"
+version = "0.0.0-alpha.1"
 authors = ["okcodes <code@ok.codes>"]
 edition = "2021"
 categories = ["development-tools::procedural-macro-helpers", "value-formatting"]
